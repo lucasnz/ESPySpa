@@ -211,7 +211,10 @@ void WebUI::begin() {
         debugE("Error mounting LittleFS");
     }
     // As a fallback we try to load from /www any requested URL
-    server.serveStatic("/", LittleFS, "/www/");
+    server
+        .serveStatic("/", LittleFS, "/www/")
+        .setDefaultFile("index.htm")
+        .setTryGzipFirst(true);
     server.onNotFound([](AsyncWebServerRequest *request) {
         if (LittleFS.totalBytes() == 0 || request->url() == "/") {
             AsyncWebServerResponse *response = request->beginResponse(302, "text/plain", "Redirecting to firmware update page");
